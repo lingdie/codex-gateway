@@ -12,7 +12,12 @@ ENV NODE_ENV=production \
 
 WORKDIR /app
 
-RUN npm install -g @openai/codex@${CODEX_VERSION} \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bubblewrap \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g @openai/codex@${CODEX_VERSION} \
     && mkdir -p /codex-home \
     && codex --version
 

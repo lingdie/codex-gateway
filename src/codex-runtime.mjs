@@ -1,6 +1,8 @@
 import { spawn } from "node:child_process";
 import process from "node:process";
 
+const CUSTOM_PROVIDER_ID = "OpenAI";
+
 function readEnv(name) {
   const value = process.env[name];
   if (typeof value !== "string") {
@@ -19,13 +21,32 @@ export function getOpenaiBaseUrl() {
   return readEnv("CODEX_OPENAI_BASE_URL") ?? readEnv("OPENAI_BASE_URL");
 }
 
+function getCustomProviderConfigArgs(baseUrl) {
+  const providerPath = `model_providers.${CUSTOM_PROVIDER_ID}`;
+
+  return [
+    "-c",
+    `model_provider=${tomlString(CUSTOM_PROVIDER_ID)}`,
+    "-c",
+    `${providerPath}.name=${tomlString(CUSTOM_PROVIDER_ID)}`,
+    "-c",
+    `${providerPath}.base_url=${tomlString(baseUrl)}`,
+    "-c",
+    `${providerPath}.wire_api=${tomlString("responses")}`,
+    "-c",
+    `${providerPath}.requires_openai_auth=true`,
+    "-c",
+    `${providerPath}.supports_websockets=false`,
+  ];
+}
+
 export function getCodexConfigArgs() {
   const args = [];
   const baseUrl = getOpenaiBaseUrl();
   const hasApiKey = Boolean(readEnv("OPENAI_API_KEY"));
 
   if (baseUrl) {
-    args.push("-c", `openai_base_url=${tomlString(baseUrl)}`);
+    args.push(...getCustomProviderConfigArgs(baseUrl));
   }
 
   if (baseUrl || hasApiKey) {
