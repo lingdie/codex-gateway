@@ -153,7 +153,7 @@ If the transcript contains `ready`, the gateway, bridge, and `codex app-server` 
 - `CODEX_BIN`: path to the `codex` executable if it is not on `PATH`.
 - `CODEX_MODEL`: preferred default model for new bridges.
 - `OPENAI_API_KEY`: API key used at startup to run `codex login --with-api-key`.
-- `CODEX_OPENAI_BASE_URL`: preferred override for the upstream OpenAI-compatible base URL passed to Codex as `openai_base_url`.
+- `CODEX_OPENAI_BASE_URL`: preferred upstream OpenAI-compatible base URL. When set, the gateway configures Codex to use a custom provider with `supports_websockets = false`.
 - `OPENAI_BASE_URL`: optional fallback alias for `CODEX_OPENAI_BASE_URL`.
 - `MAX_SESSIONS`: maximum live sessions. Defaults to `12`.
 - `SESSION_TTL_MS`: idle session TTL. Defaults to `1800000`.
@@ -186,7 +186,7 @@ docker run --rm \
 Notes:
 
 - if `OPENAI_API_KEY` is set, the container runs `codex login --with-api-key` automatically before starting the gateway
-- `CODEX_OPENAI_BASE_URL` is the preferred way to point Codex at a third-party OpenAI-compatible endpoint
+- `CODEX_OPENAI_BASE_URL` is the preferred way to point Codex at a third-party OpenAI-compatible endpoint; the gateway maps it to a custom Codex provider instead of the built-in `openai` provider
 - you do not need to mount `CODEX_HOME` for normal API-key-based startup; mount it only if you want Codex state to persist across container restarts
 - if you want Codex to operate on another workspace inside the container, set `CODEX_CWD` and mount that path too
 - this is a PoC deployment shape, not a hardened public service

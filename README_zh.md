@@ -154,7 +154,7 @@ curl http://127.0.0.1:3000/api/sessions/<SESSION_ID>/state
 - `CODEX_BIN`：`codex` 可执行文件路径，默认从 `PATH` 查找
 - `CODEX_MODEL`：新 bridge 默认模型
 - `OPENAI_API_KEY`：启动时用于执行 `codex login --with-api-key` 的 API key
-- `CODEX_OPENAI_BASE_URL`：推荐使用的上游 OpenAI-compatible `base_url`，会映射成 Codex 的 `openai_base_url`
+- `CODEX_OPENAI_BASE_URL`：推荐使用的上游 OpenAI-compatible `base_url`。设置后，gateway 会把它配置成一个关闭 websocket 的自定义 Codex provider
 - `OPENAI_BASE_URL`：`CODEX_OPENAI_BASE_URL` 的兼容别名
 - `MAX_SESSIONS`：最大同时在线 session 数，默认 `12`
 - `SESSION_TTL_MS`：空闲 session TTL，默认 `1800000`
@@ -187,7 +187,7 @@ docker run --rm \
 说明：
 
 - 如果设置了 `OPENAI_API_KEY`，容器会在启动 gateway 前自动执行 `codex login --with-api-key`
-- `CODEX_OPENAI_BASE_URL` 是把 Codex 指向第三方 OpenAI-compatible endpoint 的推荐方式
+- `CODEX_OPENAI_BASE_URL` 是把 Codex 指向第三方 OpenAI-compatible endpoint 的推荐方式；gateway 会把它映射成自定义 provider，而不是内建 `openai` provider
 - 普通 API key 启动不需要挂载 `CODEX_HOME`；只有在你希望容器重启后保留 Codex 状态时才需要挂载
 - 如果要让 Codex 在容器里操作别的工作目录，需要同时设置 `CODEX_CWD` 并挂载对应路径
 - 这是 PoC 部署方式，不是生产加固版本
